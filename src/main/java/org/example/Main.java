@@ -25,6 +25,7 @@ public class Main {
                     String incomingData = in.readLine().toLowerCase();
                     IncomingPurchase incomingPurchase = new IncomingPurchase();
                     incomingPurchase.splitJson(incomingData);
+                    System.out.println(incomingPurchase);
                     String category = max.assignCategory(incomingPurchase);
                     out.println(max.categoriesCount(category, incomingPurchase.getSum()));
 
