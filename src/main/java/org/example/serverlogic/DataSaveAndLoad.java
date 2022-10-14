@@ -1,6 +1,4 @@
-package org.example.user;
-
-import org.example.serverlogic.MaxCategoryCalc;
+package org.example.serverlogic;
 
 import java.io.*;
 
