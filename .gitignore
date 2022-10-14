@@ -1,5 +1,6 @@
 *.iml
 /.idea/
 /out/
-inputData.txt
 /target/
+inputData.txt
+data.bin
