@@ -2,7 +2,7 @@ package org.example;
 
 import org.example.serverlogic.IncomingPurchase;
 import org.example.serverlogic.MaxCategoryCalc;
-import org.example.user.DataSaveAndLoad;
+import org.example.serverlogic.DataSaveAndLoad;
 
 import java.io.*;
 import java.net.ServerSocket;
