@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class MaxCategoryCalc {
+public class MaxCategoryCalc implements Serializable {
 
     // Для хранения списка категорий и соответствующих им товаров удобно использовать коллекцию HashSet
     // для быстрого поиска в ней соответствий, ведь в реальности данный список может быть гораздо больше 8 строк

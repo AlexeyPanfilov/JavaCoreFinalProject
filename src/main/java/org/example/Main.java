@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.serverlogic.IncomingPurchase;
 import org.example.serverlogic.MaxCategoryCalc;
+import org.example.serverlogic.DataSaveAndLoad;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -13,9 +14,15 @@ public class Main {
     private static final int PORT = 8989;
 
     public static void main(String[] args) {
-        File tsvFile = new File("categories.tsv");
         MaxCategoryCalc max = new MaxCategoryCalc();
-        max.readFromTsv(tsvFile);
+        File binServerStateFile = new File("data.bin");
+        if (binServerStateFile.exists()) {
+            max = DataSaveAndLoad.loadServerStateFromBin(binServerStateFile);
+        } else {
+            System.out.println("Файл покупок не найден, будет формироваться новая статистика");
+        }
+        File tsvCategoriesListFile = new File("categories.tsv");
+        max.readFromTsv(tsvCategoriesListFile);
         try (ServerSocket serverSocket = new ServerSocket(PORT);) { // стартуем сервер один(!) раз
             while (true) { // в цикле(!) принимаем подключения
                 try (
