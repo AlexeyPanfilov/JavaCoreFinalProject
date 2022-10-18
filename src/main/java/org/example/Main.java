@@ -43,6 +43,8 @@ public class Main {
                     for (String s : maxCategories.keySet()) {
                         out.println(s + "" + maxCategories.get(s));
                     }
+                    DataSaveAndLoad saveServer = new DataSaveAndLoad();
+                    saveServer.saveServerStatToBin(binServerStateFile, max);
                 }
             }
         } catch (IOException e) {
