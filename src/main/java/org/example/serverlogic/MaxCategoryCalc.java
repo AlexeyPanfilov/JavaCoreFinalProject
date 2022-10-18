@@ -6,6 +6,8 @@ import java.util.*;
 
 public class MaxCategoryCalc implements Serializable {
 
+    private static final long serialVersionUID = 108L;
+
     // Для хранения списка категорий и соответствующих им товаров удобно использовать коллекцию HashSet
     // для быстрого поиска в ней соответствий, ведь в реальности данный список может быть гораздо больше 8 строк
     // При этом порядок элементов не важен абсолютно

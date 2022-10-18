@@ -18,21 +18,20 @@ public class MaxCategoryCalcTest {
     void assignCategory() {
         File tsvFile = new File("categories.tsv");
         categoryCalc.readFromTsv(tsvFile);
-        purchase.setTitle("булка");
+        String s = "{\"title\": \"булка\", \"date\": \"2022.3.12.\", \"sum\": 100}";
+        purchase.splitJson(s);
         Assertions.assertEquals("еда", categoryCalc.assignCategory(purchase));
     }
 
     @Test
-    @DisplayName("Тест выбора максимальной категории")
-    void categoriesCount () {
-        Map<String, Integer> categoriesAndSpends = new HashMap<>();
-        categoriesAndSpends.put("еда", 700);
-        categoriesAndSpends.put("другое", 300);
-        categoriesAndSpends.put("одежда", 600);
-        String maxCategory = "";
-        for (String key : categoriesAndSpends.keySet()) {
-            maxCategory = categoryCalc.categoriesCount(key, categoriesAndSpends.get(key));
-        }
-        Assertions.assertEquals("{\"maxCategory\": {\"category\": \"еда\",\"sum\": 700}}", maxCategory);
+    @DisplayName("Тест выбора максимальных категорий")
+    void maxCalc () {
+        Map<String, String> maxCategory;
+        purchase.splitJson("{\"title\": \"булка\", \"date\": \"2022.3.12.\", \"sum\": 100}");
+        maxCategory = categoryCalc.statisticsForPeriod("еда", purchase);
+        Assertions.assertEquals("{{\"maxCategory\":= {\"category\": \"еда\",\"sum\": 100}}, " +
+                "{\"maxYearCategory\":= {\"category\": \"еда\",\"sum\": 100}}, " +
+                "{\"maxMonthCategory\":= {\"category\": \"еда\",\"sum\": 100}}, " +
+                "{\"maxDayCategory\":= {\"category\": \"еда\",\"sum\": 100}}}", maxCategory.toString());
     }
 }

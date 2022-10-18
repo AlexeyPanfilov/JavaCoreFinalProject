@@ -3,12 +3,15 @@ package org.example.serverlogic;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class IncomingPurchase {
+public class IncomingPurchase implements Serializable {
+
+    private static final long serialVersionUID = 107L;
     private String title;
-    private String date;
+    String date;
     private int sum;
     protected GregorianCalendar dateFromString = new GregorianCalendar();
 
