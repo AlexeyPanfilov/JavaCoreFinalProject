@@ -7,6 +7,7 @@ import org.example.serverlogic.DataSaveAndLoad;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 public class Main {
 
@@ -29,16 +30,19 @@ public class Main {
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         PrintWriter out = new PrintWriter(socket.getOutputStream());
                 ) {
+                    // Получаем данные от клиента в виде JSON-строки
                     String incomingData = in.readLine().toLowerCase();
+                    // Создаем объект класса нашей покупки для ее парсинга
                     IncomingPurchase incomingPurchase = new IncomingPurchase();
                     incomingPurchase.splitJson(incomingData);
-                    System.out.println(incomingPurchase);
+                    // Присваиваем категории каждой входящей покупке
                     String category = max.assignCategory(incomingPurchase);
-                    out.println(max.categoriesCount(category, incomingPurchase.getSum()));
-                    DataSaveAndLoad saveServer = new DataSaveAndLoad();
-                    saveServer.saveServerStatToBin(binServerStateFile, max);
-
-                    // обработка одного подключения
+                    // Обработка покупок возвращает нам объект Map. Для предотвращения многократного
+                    // вызова метода создадим объект для вызова его 1 раз
+                    Map<String, String> maxCategories = max.statisticsForPeriod(category, incomingPurchase);
+                    for (String s : maxCategories.keySet()) {
+                        out.println(s + "" + maxCategories.get(s));
+                    }
                 }
             }
         } catch (IOException e) {

@@ -7,12 +7,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class IncomingPurchase {
-    protected String title;
-    protected String date;
-    protected int sum;
+    private String title;
+    private String date;
+    private int sum;
     protected GregorianCalendar dateFromString = new GregorianCalendar();
 
-    public void splitJson (String incomingData) {
+    public void splitJson(String incomingData) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         IncomingPurchase incomingPurchase = gson.fromJson(incomingData, IncomingPurchase.class);
@@ -27,22 +27,6 @@ public class IncomingPurchase {
         this.title = incomingPurchase.title;
         //this.dateFromString = incomingPurchase.dateFromString;
         this.sum = incomingPurchase.sum;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setSum(int sum) {
-        this.sum = sum;
-    }
-
-    public void setDateFromString(GregorianCalendar date) {
-        this.dateFromString = dateFromString;
     }
 
     public String getTitle() {
