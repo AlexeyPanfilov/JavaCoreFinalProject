@@ -74,9 +74,15 @@ public class UserSpends {
                  BufferedReader in = new BufferedReader(
                          new InputStreamReader(clientSocket.getInputStream()))) {
                 out.println(purchase.convertToJson());
-                System.out.println(in.readLine());
+                String replyFromServer;
+                while ((replyFromServer = in.readLine()) != null) {
+                    System.out.println(replyFromServer);
+                    Thread.sleep(300);
+                }
             } catch (IOException e) {
                 System.out.println(e.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
