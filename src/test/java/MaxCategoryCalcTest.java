@@ -25,8 +25,8 @@ public class MaxCategoryCalcTest {
 
     @Test
     @DisplayName("Тест выбора максимальных категорий")
-    void maxCalc () {
-        String  maxCategory;
+    void maxCalc() {
+        String maxCategory;
         purchase.splitJson("{\"title\": \"булка\", \"date\": \"2022.3.12.\", \"sum\": 100}");
         maxCategory = categoryCalc.statisticsForPeriod("еда", purchase);
         Assertions.assertEquals("{\"maxCategory\":{\"category\":\"еда\",\"sum\":100},\"maxYearCategory\":{\"category\":\"еда\",\"sum\":100},\"maxMonthCategory\":{\"category\":\"еда\",\"sum\":100},\"maxDayCategory\":{\"category\":\"еда\",\"sum\":100}}", maxCategory);

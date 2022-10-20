@@ -37,12 +37,7 @@ public class Main {
                     incomingPurchase.splitJson(incomingData);
                     // Присваиваем категории каждой входящей покупке
                     String category = max.assignCategory(incomingPurchase);
-                    // Обработка покупок возвращает нам объект Map. Для предотвращения многократного
-                    // вызова метода создадим объект для вызова его 1 раз
-//                    Map<String, String> maxCategories = max.statisticsForPeriod(category, incomingPurchase);
-//                    for (String s : maxCategories.keySet()) {
-                        out.println(max.statisticsForPeriod(category, incomingPurchase));
-//                    }
+                    out.println(max.statisticsForPeriod(category, incomingPurchase));
                     DataSaveAndLoad saveServer = new DataSaveAndLoad();
                     saveServer.saveServerStatToBin(binServerStateFile, max);
                 }
