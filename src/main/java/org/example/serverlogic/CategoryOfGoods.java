@@ -1,6 +1,6 @@
 package org.example.serverlogic;
 
-public class CategoriesOfGoods {
+public class CategoryOfGoods {
 
     protected String category;
     protected String goods;
@@ -23,7 +23,7 @@ public class CategoriesOfGoods {
 
     @Override
     public String toString() {
-        return "CategoriesOfGoods{" +
+        return "CategoryOfGoods{" +
                 "category='" + category + '\'' +
                 ", goods='" + goods + '\'' +
                 '}';

@@ -1,7 +1,9 @@
 package org.example.serverlogic;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.*;
-import java.net.Socket;
 import java.util.*;
 
 public class MaxCategoryCalc implements Serializable {
@@ -11,7 +13,7 @@ public class MaxCategoryCalc implements Serializable {
     // Для хранения списка категорий и соответствующих им товаров удобно использовать коллекцию HashSet
     // для быстрого поиска в ней соответствий, ведь в реальности данный список может быть гораздо больше 8 строк
     // При этом порядок элементов не важен абсолютно
-    protected static Set<CategoriesOfGoods> categoriesOfGoods = new HashSet<>();
+    protected static Set<CategoryOfGoods> categoriesOfGoods = new HashSet<>();
 
     // В эту мапу запишем категорию в качестве ключа, и данные о покупках в список,
     // прикрепленный к каждой категории, например
@@ -28,7 +30,7 @@ public class MaxCategoryCalc implements Serializable {
             while (true) {
                 if ((s = loadCatFromFile.readLine()) == null) break;
                 String[] split = s.split(" |\t");
-                CategoriesOfGoods c = new CategoriesOfGoods();
+                CategoryOfGoods c = new CategoryOfGoods();
                 c.setCategory(split[2]);
                 c.setGoods(split[1]);
                 categoriesOfGoods.add(c);
@@ -41,7 +43,7 @@ public class MaxCategoryCalc implements Serializable {
     // Этим методом присваиваем категории входящим покупкам, далее передаем эти категории вместе с
     // суммой покупки в следующий метод, производящий основной расчет наибольшей категории
     public String assignCategory(IncomingPurchase purchase) {
-        for (CategoriesOfGoods c : categoriesOfGoods) {
+        for (CategoryOfGoods c : categoriesOfGoods) {
             if (c.getGoods().equals(purchase.getTitle())) {
                 return c.getCategory();
             }
@@ -53,10 +55,13 @@ public class MaxCategoryCalc implements Serializable {
     // есть по сути txt, написанный по определенным правилам форматирования
     // Для подсчета трат по категориям за выбранный период напишем метод, который будет принимать информацию,
     // включая дату покупки. Дату мы получим, используя класс для парсинга входящей покупки.
-    public Map<String, String> statisticsForPeriod(String category, IncomingPurchase purchase) { // <еда>, <курица, 2022.09.20, 300>
-        // Итоговая мапа для сохранения максимальных трат по периодам. Хранит в себе форматированное название
-        // периода в качестве ключа и форматированный остаток текста с тратами в качестве значения
-        Map<String, String> maxCategoriesMap = new HashMap();
+    public String statisticsForPeriod(String category, IncomingPurchase purchase) { // <еда>, <курица, 2022.09.20, 300>
+        // GsonBuilder отдает нам форматированный в JSON String
+        // Для того чтобы получить данные для создания JSON объекта,
+        // нужны соответствующие классы (в OutputStatistics)
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gsonOfMaxCategories = gsonBuilder.create();
+        OutputStatistic statistic = new OutputStatistic();
         String maxCategory = "";
         int maxValue = -1;
         String maxYearCategory = "";
@@ -150,68 +155,27 @@ public class MaxCategoryCalc implements Serializable {
                     maxDayCategory = dayKey;
                 }
             }
-//            System.out.println("Мапа с категориями по годам");
-//            System.out.println(spendsByYear);
-//            System.out.println("Мапа с категориями по месяцам");
-//            System.out.println(spendsByMonth);
-//            System.out.println("Мапа с категориями по дням");
-//            System.out.println(spendsByDay);
-            maxCategoriesMap.put("{" +
-                    "\"maxCategory\":", " {" +
-                    "\"category\": \"" + maxCategory + "\"," +
-                    "\"sum\": " + maxValue +
-                    "}" +
-                    "}");
-            maxCategoriesMap.put("{" +
-                    "\"maxYearCategory\":", " {" +
-                    "\"category\": \"" + maxYearCategory + "\"," +
-                    "\"sum\": " + maxYearValue +
-                    "}" +
-                    "}");
-            maxCategoriesMap.put("{" +
-                    "\"maxMonthCategory\":", " {" +
-                    "\"category\": \"" + maxMonthCategory + "\"," +
-                    "\"sum\": " + maxMonthValue +
-                    "}" +
-                    "}");
-            maxCategoriesMap.put("{" +
-                    "\"maxDayCategory\":", " {" +
-                    "\"category\": \"" + maxDayCategory + "\"," +
-                    "\"sum\": " + maxDayValue +
-                    "}" +
-                    "}");
+            OutputStatistic.MaxCategory maxStat = new OutputStatistic.MaxCategory();
+            maxStat.setCategory(maxCategory);
+            maxStat.setSum(maxValue);
+
+            OutputStatistic.MaxYearCategory maxYearStat = new OutputStatistic.MaxYearCategory();
+            maxYearStat.setCategory(maxYearCategory);
+            maxYearStat.setSum(maxYearValue);
+
+            OutputStatistic.MaxMonthCategory maxMonthStat = new OutputStatistic.MaxMonthCategory();
+            maxMonthStat.setCategory(maxMonthCategory);
+            maxMonthStat.setSum(maxMonthValue);
+
+            OutputStatistic.MaxDayCategory maxDayStat = new OutputStatistic.MaxDayCategory();
+            maxDayStat.setCategory(maxDayCategory);
+            maxDayStat.setSum(maxDayValue);
+
+            statistic.setMaxCategory(maxStat);
+            statistic.setMaxYearCategory(maxYearStat);
+            statistic.setMaxMonthCategory(maxMonthStat);
+            statistic.setMaxDayCategory(maxDayStat);
         }
-        return maxCategoriesMap;
+        return gsonOfMaxCategories.toJson(statistic);
     }
 }
-
-// Данный код использовался при решении обязательной задачи (без разделения отчетов по периодам)
-// Для хранения сумм по категориям удобно использовать хешмап, в качестве ключа - категория,
-// в качестве значения - сумма покупок по ней
-// ДЛЯ РЕШЕНИЯ С РАЗДЕЛЕНИЕМ ПО ПЕРИОДАМ ТАКУЮ МАПУ ИСПОЛЬЗОВАТЬ УЖЕ НЕ УДОБНО, ИБО НЕ ХРАНИТ В СЕБЕ ДАТУ
-//    protected Map<String, Integer> categoriesAndSpends = new HashMap<>();
-
-//    public String categoriesCount(String category, int spends) {
-//        String maxCategory = "";
-//        int maxValue = -1;
-//        if (!categoriesAndSpends.containsKey(category)) {
-//            categoriesAndSpends.put(category, spends);
-//        } else {
-//            int value = categoriesAndSpends.get(category);
-//            value += spends;
-//            categoriesAndSpends.put(category, value);
-//        }
-//        for (String key : categoriesAndSpends.keySet()) {
-//            int value = categoriesAndSpends.get(key);
-//            if (value > maxValue) {
-//                maxValue = value;
-//                maxCategory = key;
-//            }
-//        }
-//        return "{" +
-//                "\"maxCategory\": {" +
-//                "\"category\": \"" + maxCategory + "\"," +
-//                "\"sum\": " + maxValue +
-//                "}" +
-//                "}";
-//    }
